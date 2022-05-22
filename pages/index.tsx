@@ -4,7 +4,7 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
-    return <>
+    return <div className={styles.container}>
         <Head>
             <title>Wall-Bot</title>
             <meta name="description" content="Send yourself messages!"/>
@@ -15,13 +15,12 @@ export default function Home() {
             </h1>
 
             <p className={styles.description}>
-                Send yourself messages with simple APIs
+                Send yourself messages with a simple API
             </p>
         </main>
-
         <footer className={styles.footer}>
             <a
-                href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+                href="https://github.com/Rhacoal/wall-bot"
                 target="_blank"
                 rel="noopener noreferrer"
             >
@@ -29,5 +28,5 @@ export default function Home() {
                 <span className={styles.logo}><Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16}/></span>
             </a>
         </footer>
-    </>
+    </div>
 }

@@ -15,7 +15,7 @@ interface Message {
 
 interface Update {
     update_id: number,
-    message: Message,
+    message?: Message,
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -24,17 +24,19 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return;
     }
     const update = req.body as Update;
-    if (update.message.chat.type === "private") {
+    console.log(`Received update: ${JSON.stringify(update)}`);
+    if (update.message) {
         if (update.message.text?.match(/^\/start/)) {
+            const token = toToken(update.message.chat.id);
             res.json({
                 method: "sendMessage",
                 chat_id: update.message.chat.id,
-                text: `Your token is "${toToken(update.message.chat.id)}" (without quotes).\n\n` +
+                text: `Your token is "${token}" (without quotes).\n\n` +
                     "You may send yourself messages with this token, by making a GET or POST request to " +
                     "https://wall-bot.vercel.app/api/sendMessage with arguments `token` and `msg`.\n\n" +
                     "Arguments can be passed in query string or in body as application/x-www-form-urlencoded " +
                     "or application/json. e.g.\n\n" +
-                    "curl -X GET 'https://wall-bot.vercel.app/api/sendMessage?token=123456789&msg=test_message'",
+                    `curl "https://wall-bot.vercel.app/api/sendMessage" -X POST -d "token=${token}&msg=Hello%2C%20world%21"`,
             });
         } else {
             res.json({
@@ -44,6 +46,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             });
         }
     } else {
-        res.status(200).send("OK");
+        res.status(200).send("OK, but unsupported message type");
     }
 }
