@@ -29,8 +29,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             res.json({
                 method: "sendMessage",
                 chat_id: update.message.chat.id,
-                text: `Your token is "${toToken(update.message.chat.id)}" (without quotes).\n` +
-                    "Use this token to send yourself messages!",
+                text: `Your token is "${toToken(update.message.chat.id)}" (without quotes).\n\n` +
+                    "You may send yourself messages with this token, by making a GET or POST request to " +
+                    "https://wall-bot.vercel.app/api/sendMessage with arguments `token` and `msg`.\n\n" +
+                    "Arguments can be passed in query string or in body as application/x-www-form-urlencoded " +
+                    "or application/json. e.g.\n\n" +
+                    "curl -X GET 'https://wall-bot.vercel.app/api/sendMessage?token=123456789&msg=test_message'",
             });
         } else {
             res.json({
