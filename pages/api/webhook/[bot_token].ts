@@ -31,12 +31,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             res.json({
                 method: "sendMessage",
                 chat_id: update.message.chat.id,
-                text: `Your token is "${token}" (without quotes).\n\n` +
+                parse_mode: "Markdown",
+                text: `Your token is \`${token}\`.\n\n` +
                     "You may send yourself messages with this token, by making a GET or POST request to " +
-                    "https://wall-bot.vercel.app/api/sendMessage with arguments `token` and `msg`.\n\n" +
-                    "Arguments can be passed in query string or in body as application/x-www-form-urlencoded " +
-                    "or application/json. e.g.\n\n" +
-                    `curl "https://wall-bot.vercel.app/api/sendMessage" -X POST -d "token=${token}&msg=Hello%2C%20world%21"`,
+                    "`https://wall-bot.vercel.app/api/sendMessage` with arguments `token` and `msg`.\n\n" +
+                    "Arguments can be passed in query string or in body as `application/x-www-form-urlencoded` " +
+                    "or `application/json`, e.g.\n" +
+                    "```shell\n" +
+                    `curl "https://wall-bot.vercel.app/api/sendMessage" -X POST -d "token=${token}&msg=Hello%2C%20world%21"\n` +
+                    "```",
             });
         } else {
             res.json({
