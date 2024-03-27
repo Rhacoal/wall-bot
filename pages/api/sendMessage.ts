@@ -1,9 +1,9 @@
 import type {NextApiRequest, NextApiResponse} from "next";
 import {fromToken, toToken} from "../../utils/user";
 
-async function sendMessage(chatId: string | number, text: String) {
+async function sendMessage(chatId: string | number, text: String): Promise<Response> {
     text = text.substring(0, 2048);
-    await fetch(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`, {
+    return await fetch(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -17,7 +17,7 @@ async function sendMessage(chatId: string | number, text: String) {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const token = req.query.token ?? req.body.token;
-    if (!token) {
+    if (!token || token.length !== 16) {
         res.status(400).send("400 Bad Request");
         return;
     }
@@ -32,7 +32,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
     }
     try {
-        await sendMessage(chatId, `${msg}`.substring(0, 2048));
+        const { status } = await sendMessage(chatId, `${msg}`.slice(0, 2048));
+        if (status !== 200) {
+            res.status(401).send("401 Unauthorized");
+            return;
+        }
     } catch {
         res.status(500).send("500 Internal Server Error");
         return;
